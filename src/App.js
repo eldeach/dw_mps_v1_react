@@ -5,6 +5,7 @@ function App() {
   return (
     <div className="App">
       <div>최초</div>
+      <div>최초</div>
     </div>
   );
 }
