@@ -34,6 +34,7 @@ function App() {
           <div style={{ height: '46px' }} />
           <Routes>
             <Route path='/' element={<div />} />
+            
             <Route path='/item1' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
             <Route path='/item2' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
 
