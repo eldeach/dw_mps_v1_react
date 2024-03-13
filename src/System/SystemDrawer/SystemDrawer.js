@@ -41,62 +41,23 @@ function SystemDrawer(props) {
                 <div style={{ height: '46px' }} />
                 <Divider />
                 <List>
-                    <ListItemNavPath id = {"root"} display = {"block"} navPath={'/'} routingMode = {true} icon={<InboxIcon />} openDrawer={openDrawer} text={"root"} />
-                    <ListItemNavPath id = {"item2"} display = {"block"} navPath={'/item2'} routingMode = {true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 2"} />
-                    <ListItemNavPath id = {"item3"} display = {"block"} navPath={'/item3'} routingMode = {true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 3"} />
+                    <ListItemNavPath id={"root"} display={"block"} navPath={'/'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"root"} />
+                    <ListItemNavPath id={"item1"} display={"block"} navPath={'/item1'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 1"} />
+                    <ListItemNavPath id={"item2"} display={"block"} navPath={'/item2'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 2"} />
                 </List>
                 <Divider />
                 <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={{
-                                    // minHeight: 48,
-                                    justifyContent: openDrawer ? 'initial' : 'center',
-                                    px: 2.5,
-                                }}
-                            >
-                                <ListItemIcon
-                                    sx={{
-                                        minWidth: 0,
-                                        mr: openDrawer ? 3 : 'auto',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={<div style={{ fontSize: '13px' }}>{text}</div>} sx={{ opacity: openDrawer ? 1 : 0 }} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    <ListItemNavPath id={"item3"} display={"block"} navPath={'/'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 3"} />
+                    <ListItemNavPath id={"item4"} display={"block"} navPath={'/item3'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 4"} />
+                    <ListItemNavPath id={"item5"} display={"block"} navPath={'/item4'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 5"} />
                 </List>
             </div>
             <Box sx={{ flexGrow: 1 }} />
             <Divider />
             <List>
-                {['Factory', 'Language'].map((text, index) => (
-                    <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                                // minHeight: 48,
-                                justifyContent: openDrawer ? 'initial' : 'center',
-                                px: 2.5,
-                            }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: openDrawer ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                {index === 0 ? <FactoryIcon /> :<LanguageIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={<div style={{ fontSize: '13px' }}>{text}</div>} sx={{ opacity: openDrawer ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-                <ListItemNavPath id = {"btSystem"} display = {"block"} navPath={'/system'} routingMode = {true} icon={<SettingsIcon />} openDrawer={openDrawer} text={"System"} />
+                <ListItemNavPath id={"btFactory"} display={"block"} navPath={'/factory'} routingMode={true} icon={<FactoryIcon />} openDrawer={openDrawer} text={"Factory"} />
+                <ListItemNavPath id={"btLang"} display={"block"} navPath={'/lang'} routingMode={true} icon={<LanguageIcon />} openDrawer={openDrawer} text={"Language"} />
+                <ListItemNavPath id={"btSystem"} display={"block"} navPath={'/system'} routingMode={true} icon={<SettingsIcon />} openDrawer={openDrawer} text={"System"} />
             </List>
         </Drawer>
     )

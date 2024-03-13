@@ -34,8 +34,16 @@ function App() {
           <div style={{ height: '46px' }} />
           <Routes>
             <Route path='/' element={<div />} />
-            <Route path='/item2' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
-            <Route path='/item3' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path='/item1' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
+            <Route path='/item2' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+
+            <Route path='/item3' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
+            <Route path='/item4' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path='/item5' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+
+            <Route path='/factory' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
+            <Route path='/lang' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path='/system' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
           </Routes>
         </Box>
       </div>
