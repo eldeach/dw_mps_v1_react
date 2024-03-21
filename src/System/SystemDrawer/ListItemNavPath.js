@@ -27,9 +27,9 @@ function ListItemNavPath(props) {
                     }}
                     onClick={() => {
                         if (routingMode) {
-                            navigate(navPath)
+                            navigate(id)
                         } else {
-                            openInNewTab(props.navPath)
+                            openInNewTab(navPath)
                         }
                     }}>
                     <ListItemIcon
@@ -41,7 +41,7 @@ function ListItemNavPath(props) {
                     >
                         {props.icon}
                     </ListItemIcon>
-                    <ListItemText primary={<div style={{ fontSize: '13px' }}>{text}</div>} sx={{ opacity: openDrawer ? 1 : 0 }} />
+                    <ListItemText primary={<div style={{ fontSize: '13px', textWrap:'wrap'}}>{text}</div>} sx={{ opacity: openDrawer ? 1 : 0 }} />
                 </ListItemButton>
             </ListItem>
         </div>

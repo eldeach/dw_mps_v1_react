@@ -11,9 +11,11 @@ import SystemAppBar from './System/SystemAppBar';
 import SystemDrawer from './System/SystemDrawer/SystemDrawer';
 import systemThemes from './System/systemThemes';
 
+import PermissionCheck from './System/PermissionCheck'
+
 import RoutePageTest from './System/Redirect/RoutePageTest'
 import PermissionDenied from './System/Redirect/PermissionDenied'
-import PermissionCheck from './System/PermissionCheck'
+import CtrlChartSample from './System/Redirect/ChartSample'
 
 // ======================================================================================== [Import CSS]
 import './App.css';
@@ -38,11 +40,11 @@ function App() {
             <Route path='/item1' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
             <Route path='/item2' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
 
-            <Route path='/item3' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
-            <Route path='/item4' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
-            <Route path='/item5' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path='/item3' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>} />
+            <Route path='/item4' element={!(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path='/item5' element={!(PermissionCheck()) ? <CtrlChartSample /> : <PermissionDenied/>}/>
 
-            <Route path='/factory' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
+            <Route path='/factory' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>} />
             <Route path='/lang' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
             <Route path='/system' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
           </Routes>

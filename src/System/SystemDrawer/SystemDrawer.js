@@ -47,7 +47,7 @@ function SystemDrawer(props) {
                 </List>
                 <Divider />
                 <List>
-                    <ListItemNavPath id={"item3"} display={"block"} navPath={'/'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 3"} />
+                    <ListItemNavPath id={"item3"} display={"block"} navPath={'/item3'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"Control Chart Sample"} />
                     <ListItemNavPath id={"item4"} display={"block"} navPath={'/item3'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 4"} />
                     <ListItemNavPath id={"item5"} display={"block"} navPath={'/item4'} routingMode={true} icon={<InboxIcon />} openDrawer={openDrawer} text={"item 5"} />
                 </List>
