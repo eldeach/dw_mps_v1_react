@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // ======================================================================================== [Import Project JS]
 // N/A
+import LoginButton from './ButtonLogin/LoginButton';
 
 // ======================================================================================== [Import CSS]
 // N/A
@@ -42,7 +43,8 @@ function SystemAppBar(props) {
                     {appBarTitle}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button variant="outlined" color="white" size="small" >Login</Button>
+                <LoginButton/>
+                {/* <Button variant="outlined" color="white" size="small" >Login</Button> */}
             </Toolbar>
         </AppBar>
     )
