@@ -131,7 +131,6 @@ function LoginButton() {
             })
     }
 
-
     useEffect(() => {
         sessioncheck()
     }, [])
