@@ -1,25 +1,32 @@
 // ======================================================================================== [Import Libaray]
 import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import axios from 'axios';
-import cookies from 'react-cookies'
 import * as yup from 'yup';
 import moment from 'moment/moment';
 
 // ======================================================================================== [Import Material UI Libaray]
-import { Button, Modal, Paper, TextField } from '@mui/material';
+import { Autocomplete, Button, Modal, Paper, TextField, Box } from '@mui/material';
 //icon
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // ======================================================================================== [Import Component] js
-
+// Env
+import envLangFinder from '../Env/envLangFinder';
 
 // ======================================================================================== [Import Component] CSS
 
 function LoginButton() {
+    // Redux
+    const envClientLang = useSelector(state => state.envClient.lang);
+    const envClientPlantlist = useSelector(state => state.envClient.plantlist);
+
+    // navigator
     const navigate = useNavigate();
 
+    // style
     const style = {
         popupTitle: {
             box: {
@@ -47,17 +54,18 @@ function LoginButton() {
 
     const yupSchema = yup.object().shape({
         user_account: yup.string()
-            .required("F_LOGIN_05"),
+            .required(envLangFinder(envClientLang, `LOGIN_05`)),
 
         user_pw: yup.string()
-            .required("F_LOGIN_06")
+            .required(envLangFinder(envClientLang, `LOGIN_06`)),
     });
 
     const initialValues = {
         user_account: '',
         user_pw: '',
-        plant_cd: '1230'
+        plant_cd: ''
     }
+    const [plant, setPlant] = useState(null);
 
     const [popup, setPopup] = useState(0);
     const handleModalClose = () => setPopup(0);
@@ -93,13 +101,19 @@ function LoginButton() {
     }
 
     const onSubmitFunc = async function (values) {
-        await axios.post('/local-login', values)
+        let payload = {
+            USER_ID: values.user_account,
+            PWD: values.user_pw,
+            PLANT_CD: plant.PLANT_CD
+        }
+        await axios.post('/local-login', payload)
             .then((res) => {
-                if (res.status === 200 && res.data.msg === "F_LOGIN_07") {
+                if (res.status === 200 && res.data.msg === "LOGIN_07") {
                     loginStatusUpdate(res.data.extraData.expireDateTime);
                     handleModalClose();
-                } else  if (res.status === 200 && res.data.msg === "F_LOGIN_09") {
-                    alert(res.data.msg)
+
+                } else if (res.status === 200 && res.data.msg === "LOGIN_09") {
+                    alert(envLangFinder(envClientLang, res.data.msg))
                 } else {
 
                 }
@@ -114,11 +128,11 @@ function LoginButton() {
     const sessioncheck = async function () {
         await axios.get('/sessioncheck')
             .then((res) => {
-                if (res.status === 200 && res.data.msg === "F_LOGIN_13") {
+                if (res.status === 200 && res.data.msg === "LOGIN_13") {
                     loginStatusUpdate(res.data.extraData.expireDateTime)
                 }
-                else if (res.status === 200 && res.data.msg === "F_LOGIN_11") {
-                    alert(res.data.msg)
+                else if (res.status === 200 && res.data.msg === "LOGIN_11") {
+                    // alert(res.data.msg)
                 }
                 else {
 
@@ -134,6 +148,12 @@ function LoginButton() {
     useEffect(() => {
         sessioncheck()
     }, [])
+
+    useEffect(() => {
+        setPlant(envClientPlantlist.find(function (oneRow) {
+            return (oneRow.PLANT_CD == 1230)
+        }))
+    }, [envClientPlantlist])
 
     useEffect(() => {
         const handleMouseDown = (e) => {
@@ -164,8 +184,8 @@ function LoginButton() {
             <Button variant="outlined" color="white" size="small" onClick={() => { loginStatus ? logoutFunc() : setPopup(1) }}>
                 {
                     loginStatus ?
-                        `F_LOGIN_02`
-                        : `F_LOGIN_01`
+                        envLangFinder(envClientLang, `LOGIN_02`)
+                        : envLangFinder(envClientLang, `LOGIN_01`)
                 }
             </Button>
             {
@@ -198,14 +218,47 @@ function LoginButton() {
                                 <div>
                                     <div style={style.popupTitle.box}>
                                         <AccountCircleIcon color='primary' sx={{ fontSize: 'xx-large' }} />
-                                        <div style={style.popupTitle.text}>F_LOGIN_01</div>
+                                        <div style={style.popupTitle.text}>{envLangFinder(envClientLang, `LOGIN_01`)}</div>
                                     </div>
+                                    <Autocomplete
+                                        id="plant"
+                                        size="small"
+                                        disableClearable
+                                        value={plant}
+                                        onChange={(event, newValue) => {
+                                            console.log(newValue)
+                                            setPlant(newValue);
+                                        }}
+                                        options={envClientPlantlist}
+                                        getOptionLabel={(option) => `${option.PLANT_NM} (${option.PLANT_CD})`}
+                                        renderOption={(props, option) => (
+                                            <Box sx={{ ...style.toMui.inputTextField }} {...props}>
+                                                {`${option.PLANT_NM} (${option.PLANT_CD})`}
+                                            </Box>
+                                        )}
+                                        defaultValue={
+                                            envClientPlantlist.find(function (oneRow) {
+                                                return (oneRow.PLANT_CD == 1230)
+                                            })
+                                        }
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={`${envLangFinder(envClientLang, `LOGIN_12`)}`}
+                                                inputProps={{ ...params.inputProps, style: style.toMui.inputTextField }} // font size of input text
+                                                InputLabelProps={{ ...params.InputLabelProps, style: style.toMui.inputTextField }} // font size of input label
+                                                slotProps={{ ...params.slotProps, style: style.toMui.inputTextField }}
+                                                placeholder={`${envLangFinder(envClientLang, `LOGIN_12`)}`}
+                                            />
+                                        )}
+                                    />
                                     <TextField
                                         required
                                         variant="outlined"
                                         id="user_account"
                                         name="user_account"
-                                        label={`F_LOGIN_03`}
+                                        label={envLangFinder(envClientLang, `LOGIN_03`)}
+                                        placeholder={`${envLangFinder(envClientLang, `LOGIN_03`)}`}
                                         value={formikProps.values.user_account}
                                         onChange={formikProps.handleChange}
                                         onBlur={formikProps.handleBlur}
@@ -222,7 +275,8 @@ function LoginButton() {
                                         variant="outlined"
                                         id="user_pw"
                                         name="user_pw"
-                                        label={`F_LOGIN_04`}
+                                        label={envLangFinder(envClientLang, `LOGIN_04`)}
+                                        placeholder={`${envLangFinder(envClientLang, `LOGIN_04`)}`}
                                         type="password"
                                         value={formikProps.values.user_pw}
                                         onChange={formikProps.handleChange}
@@ -235,25 +289,8 @@ function LoginButton() {
                                         inputProps={{ style: style.toMui.inputTextField }} // font size of input text
                                         InputLabelProps={{ style: style.toMui.inputTextField }} // font size of input label
                                     />
-                                    <TextField
-                                        required
-                                        variant="outlined"
-                                        id="plant_cd"
-                                        name="plant_cd"
-                                        label={`F_LOGIN_12`}
-                                        value={formikProps.values.plant_cd}
-                                        onChange={formikProps.handleChange}
-                                        onBlur={formikProps.handleBlur}
-                                        helperText={formikProps.touched.plant_cd ? formikProps.errors.plant_cd : ""}
-                                        error={formikProps.touched.plant_cd && Boolean(formikProps.errors.plant_cd)}
-                                        size='small'
-                                        margin="dense"
-                                        fullWidth
-                                        inputProps={{ style: style.toMui.inputTextField }} // font size of input text
-                                        InputLabelProps={{ style: style.toMui.inputTextField }} // font size of input label
-                                    />
                                 </div>
-                                <Button sx={{ mt: 1 }} color='primary' fullWidth variant="contained" size='small' type="submit" form="loginForm">F_LOGIN_01</Button>
+                                <Button sx={{ mt: 1 }} color='primary' fullWidth variant="contained" size='small' type="submit" form="loginForm">{envLangFinder(envClientLang, `LOGIN_01`)}</Button>
                             </form>
                         )}
                     </Formik>
@@ -262,7 +299,6 @@ function LoginButton() {
         </div>
     )
 }
-
 
 
 function SessionTimer(props) {

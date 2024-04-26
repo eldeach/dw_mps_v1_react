@@ -1,52 +1,70 @@
 // ======================================================================================== [Import Libaray]
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { setEnvClientLang, setEnvClientMenu, setEnvClientPlantlist, setEnvClientAppBarTitle } from "./store";
 // ======================================================================================== [Import Material UI Libaray]
 import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 //icons
 
 // ======================================================================================== [Import Project JS]
-import SystemAppBar from './System/SystemAppBar';
-import SystemDrawer from './System/SystemDrawer/SystemDrawer';
-import systemThemes from './System/systemThemes';
+// Auth
+import AuthDynRoute from './Auth/AuthDynRoute';
 
-import PermissionCheck from './System/PermissionCheck'
+// Nav
+import NavAppBar from './Nav/NavAppBar';
+import NavMenu from './Nav/NavMenu'
 
-import RoutePageTest from './System/Redirect/RoutePageTest'
-import PermissionDenied from './System/Redirect/PermissionDenied'
-import CtrlChartSample from './System/Redirect/ChartSample'
+// Theme
+import themeSystem from './Theme/themeSystem';
 
 // ======================================================================================== [Import CSS]
 import './App.css';
 
-function App() {
 
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const handleDrawerToggle = () => {
-    setOpenDrawer(!openDrawer)
-  }
+function App() {
+  // Redux
+  const envClientMenu = useSelector(state => state.envClient.menu);
+  let dispatch = useDispatch()
+
+
+
+  useLayoutEffect(async () => {
+    let rs = []
+    rs = await axios.get('/envclient')
+      .then((res) => {
+        dispatch(setEnvClientLang(res.data[0]))
+        dispatch(setEnvClientMenu(res.data[1]))
+        dispatch(setEnvClientPlantlist(res.data[2]))
+        dispatch(setEnvClientAppBarTitle("CPV"))
+      })
+      .catch((error) => {
+        console.log("ERROR OCCUR \n\n")
+        console.log(error)
+      })
+  }, [])
 
   return (
-    <ThemeProvider theme={systemThemes}>
+    <ThemeProvider theme={themeSystem}>
       <div style={{ display: 'flex' }}>
-        <SystemAppBar appBarTitle={`CPV`} handleDrawerToggle={handleDrawerToggle} />
-        <SystemDrawer openDrawer={openDrawer} />
+        <NavAppBar />
+        <NavMenu />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <div style={{ height: '46px' }} />
           <Routes>
-            <Route path='/' element={<div />} />
-            
-            <Route path='/item1' element={(PermissionCheck()) ? <div /> : <PermissionDenied/>} />
-            <Route path='/item2' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
-
-            <Route path='/item3' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>} />
-            <Route path='/item4' element={!(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
-            <Route path='/item5' element={!(PermissionCheck()) ? <CtrlChartSample /> : <PermissionDenied/>}/>
-
-            <Route path='/factory' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>} />
-            <Route path='/lang' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
-            <Route path='/system' element={(PermissionCheck()) ? <RoutePageTest /> : <PermissionDenied/>}/>
+            <Route path={'/'} element={<div />} />
+            {
+              envClientMenu ? envClientMenu.map((value, index) => {
+                if (value.ROUTE_PATH && (value.ROUTE_PATH != '/')) {
+                  return <Route path={value.ROUTE_PATH} element={<AuthDynRoute menuCD={value.MENU_CD} comp={value.COMPONENT} />} />
+                }
+              }) : null
+            }
+            <Route path={'/system'} element={<AuthDynRoute menuCD={'system'} comp={'SamplePage'} />} />
           </Routes>
         </Box>
       </div>

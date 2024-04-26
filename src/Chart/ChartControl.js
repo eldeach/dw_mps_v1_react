@@ -2,11 +2,14 @@
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ReferenceLine, Label, Legend } from 'recharts';
 import Typography from '@mui/material/Typography';
 
+import tooltopLabelStyle from './Style/tooltopLabelStyle';
+import tooltopContentStyle from './Style/tooltopContentStyle'
+import legnedWrapperStyle from './Style/legnedWrapperStyle'
 
-function CtrlChart(props) {
-
-
-    const { xbar, data, unit, vName, lsl, usl, lcl, ucl, avg } = props;
+function ChartControl(props) {
+    const { control_data, data } = props.data
+    const { title, vName, unit, lsl, usl, lcl, ucl, avg } = control_data[0]
+    const xbar = props.xbar
 
     const CustomDot = props => {
         if (props.value > ucl || props.value < lcl) {
@@ -37,57 +40,33 @@ function CtrlChart(props) {
     const formatYAxisTick = (tick) => {
         return tick.toFixed(2); // 소수점 둘째 자리까지 표시
     };
+
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '660px',
-            paddingTop: '10px',
-            paddingBottom: '10px',
-            border: 'solid grey 1px',
-            boxSizing: 'border-box',
-            textAlign: 'center'
-        }}>
-            <Typography>{xbar ? "X Bar Control Chart" : "R Control Chart"}</Typography>
+        <div className='chart-box'>
+            <Typography>{title}</Typography>
             <LineChart
                 width={650}
                 height={280}
                 data={data}
-                margin={{ left: -10, right: 80 }}
+                margin={{ top: 10 , left: -10, right: 80 }}
             >
                 <XAxis
                     dataKey="batch"
                     tick={{ fontSize: 10 }}
                 />
                 <YAxis
-                    domain={
-                        // xbar인 경우에만 LSL/USL 기준으로, 아니면 LCL/UCL 기준으로 Y 축범위 설정
-                        xbar ?
-                            [(lsl - 1 > 0 ? lsl - 0.5 : 0), usl + 0.5]
-                            : [(lcl - 1 > 0 ? lcl - 0.5 : 0), ucl + 0.5]
-                    }
                     tick={{ fontSize: 10 }}
                     tickFormatter={formatYAxisTick}
                     unit={` ${unit}`}
                 />
                 <Tooltip
-                    labelStyle={{
-                        fontSize: '10px',
-                        marginBottom: '0px',
-                        color: '#555',
-                    }}
-                    contentStyle={{
-                        fontSize: '10px',
-                        marginBottom: '0px',
-                        fontWeight: 700,
-                    }}
+                    labelStyle={tooltopLabelStyle}
+                    contentStyle={tooltopContentStyle}
                 />
                 <Legend
                     align='center'
                     iconSize={15}
-                    wrapperStyle={{
-                        paddingLeft: "50px", fontSize: '12px', fontWeight: 500
-                    }}
+                    wrapperStyle={legnedWrapperStyle}
                 />
                 <CartesianGrid stroke="#f5f5f5" />
                 <Line type="linear" dataKey={vName} stroke="#413ea0" dot={CustomDot} activeDot={ActiveCustomDot} />
@@ -124,4 +103,4 @@ function CtrlChart(props) {
     )
 }
 
-export default CtrlChart
+export default ChartControl;
