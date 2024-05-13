@@ -1,5 +1,7 @@
 // ======================================================================================== [Import Libaray]
 import cookies from 'react-cookies'
+// Redux
+import { useSelector } from "react-redux";
 
 // ======================================================================================== [Import Material UI Libaray]
 import { Button } from '@mui/material';
@@ -14,45 +16,48 @@ import InfoIcon from '@mui/icons-material/Info';
 
 // ======================================================================================== [Import Component] CSS
 
-function SubmitSuccess(){
+function RepSubmitSuccess() {
+    // Redux
+    const envClientLang = useSelector(state => state.envClient.lang);
+
     const style = {
-        subtitle:{
-            box : {
-                display:'flex', flexDirection:'column', alignItems:'center', fontSize:'medium',marginTop:'200px'
+        subtitle: {
+            box: {
+                display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: 'medium', marginTop: '200px'
             },
-            text : {
-                fontSize : '20px', marginTop:'4px', marginLeft:'2px'
+            text: {
+                fontSize: '20px', marginTop: '4px', marginLeft: '2px'
             }
         },
-        descriptionBox : {
-            marginTop:'20px',
-            marginBottom : '46px',
-            boxSizing : 'border-box',
-            fontSzie : 'small',
-            color : 'orange',
-            whiteSpace : 'pre-wrap',
-            worWrap : 'break-word',
-            textAlign : 'center',
-            flexGrow : 1
+        descriptionBox: {
+            marginTop: '20px',
+            marginBottom: '46px',
+            boxSizing: 'border-box',
+            fontSzie: 'small',
+            color: 'orange',
+            whiteSpace: 'pre-wrap',
+            worWrap: 'break-word',
+            textAlign: 'center',
+            flexGrow: 1
         },
-        description : {
-            marginTop : '0px',
-            marginBottom : '6px',
+        description: {
+            marginTop: '0px',
+            marginBottom: '6px',
         },
     }
 
     return (
         <div id='sessionExpiredMsgPage'>
             <div style={style.subtitle.box}>
-                <DoneOutlineIcon color='submitted' sx={{fontSize:'60px'}}/>
-                <div style={style.subtitle.text}>{submitSuccessLang.sessionExpiredMsgPage.pageTitle[cookies.load('site-lang')]}</div>
+                <DoneOutlineIcon color='submitted' sx={{ fontSize: '60px' }} />
+                <div style={style.subtitle.text}>{submitSuccessLang.sessionExpiredMsgPage.pageTitle[cookies.load('cpv-site-lang')]}</div>
             </div>
             <div style={style.descriptionBox}>
-                <InfoIcon color = 'sys1' fontSize="medium"/>
-                <p style={style.description}>{submitSuccessLang.sessionExpiredMsgPage.text.p1[cookies.load('site-lang')]}</p>
+                <InfoIcon color='sys1' fontSize="medium" />
+                <p style={style.description}>{submitSuccessLang.sessionExpiredMsgPage.text.p1[cookies.load('cpv-site-lang')]}</p>
             </div>
-            <div style ={{widht: '100%', textAlign : 'center'}}>
-                <Button sx={{ mt:1 }} color = 'sys1' variant="contained" size='small' href = { '/' } >{ submitSuccessLang.sessionExpiredMsgPage.returnButton[cookies.load('site-lang')] }</Button>
+            <div style={{ widht: '100%', textAlign: 'center' }}>
+                <Button sx={{ mt: 1 }} color='sys1' variant="contained" size='small' href={'/'} >{submitSuccessLang.sessionExpiredMsgPage.returnButton[cookies.load('cpv-site-lang')]}</Button>
             </div>
         </div>
     )
@@ -60,23 +65,23 @@ function SubmitSuccess(){
 
 
 const submitSuccessLang = {
-    sessionExpiredMsgPage : {
-        pageTitle : {
-            kor : "성공적으로 제출 하였습니다.",
-            eng : "Submission successful."
+    sessionExpiredMsgPage: {
+        pageTitle: {
+            kor: "성공적으로 제출 하였습니다.",
+            eng: "Submission successful."
         },
-        text : {
-            p1 : {
-                kor : "*작성하신 내용이 성공적으로 제출 되었습니다.",
-                eng : "*Your submission has been completed."
+        text: {
+            p1: {
+                kor: "*작성하신 내용이 성공적으로 제출 되었습니다.",
+                eng: "*Your submission has been completed."
             },
         },
-        returnButton : {
-            kor : "첫 페이지로",
-            eng : "Go to the first page"
+        returnButton: {
+            kor: "첫 페이지로",
+            eng: "Go to the first page"
         }
     },
 }
 
 
-export default NoAuthPage;
+export default RepSubmitSuccess;

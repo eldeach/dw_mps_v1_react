@@ -1,6 +1,8 @@
 // ======================================================================================== [Import Libaray]
 import cookies from 'react-cookies'
+// Redux
 import { useSelector } from "react-redux";
+
 // ======================================================================================== [Import Material UI Libaray]
 import { Button } from '@mui/material';
 // icon
@@ -78,7 +80,7 @@ function NoAuthPage() {
                 <p style={style.description}>{envLangFinder(envClientLang, 'PERDENY_03')}</p>
             </div>
             <div style={{ widht: '100%', textAlign: 'center' }}>
-                <Button sx={{ mt: 1 }} color='primary' variant="contained" size='small' href={'/'} >{noAuthPageLang.sessionExpiredMsgPage.returnButton[cookies.load('site-lang')]}</Button>
+                <Button sx={{ mt: 1 }} color='primary' variant="contained" size='small' href={'/'} >{noAuthPageLang.sessionExpiredMsgPage.returnButton[cookies.load('cpv-site-lang')]}</Button>
             </div>
         </div>
     )

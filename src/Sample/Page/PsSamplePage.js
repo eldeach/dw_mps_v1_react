@@ -11,7 +11,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import Table from '../../Table/Table'
 import TableCheckColumn from '../../Table/TableCheckColumn'
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 // import columnDef from '../ColumnDef/columnDef'
 
 
@@ -21,7 +21,7 @@ function SamplePage() {
     const [tableSelected, setTableSelected] = useState([]);
 
     return (
-        <div className="sample-page">
+        <div>
             <ChartControl xbar={true} data={dsCtrlScatter} />
             <ChartHistogram data={dsHistogram} />
             <div>
@@ -59,6 +59,7 @@ function SamplePage() {
                     tableWidth: '96vw',
                     tblNumRow: 5
                 }}
+                muiColor='primary'
                 reqParam={{
                     method: 'get',
                     url: '/cpvdata',
@@ -66,6 +67,7 @@ function SamplePage() {
                         'Content-Type': 'application/json'
                     }
                 }}
+                multiSelectable = {true}
                 setTableSelected={setTableSelected}
                 columns={columnDef}
             />

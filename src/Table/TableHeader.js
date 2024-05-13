@@ -3,7 +3,6 @@ import { flexRender } from "@tanstack/react-table";
 import { useMemo, useState, useEffect, useRef } from "react";
 import cookies from 'react-cookies'
 
-
 // ======================================================================================== [Import Material UI Libaray]
 import { IconButton } from '@mui/material';
 //icon
@@ -18,26 +17,22 @@ import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 // ======================================================================================== [Import Component] CSS
 
-function TableHeader(props) {
-
-    const { header, tbleWidth } = props;
+function TableHeader({ header, tblWidthValue, colTotalWidth }) {
 
     const [thWidth, setThWidth] = useState(null);
-
     useEffect(() => {
-        if (tbleWidth) {
-            console.log(tbleWidth)
-            console.log(Math.round((tbleWidth-30) * (header.getSize() / 1590)))
-            setThWidth(Math.round((tbleWidth-30) * (header.getSize() / 1590)))
-            console.log(`table width size = ${tbleWidth}`)
+        if (tblWidthValue) {
+            setThWidth(Math.round((tblWidthValue - 30) * (header.getSize() / colTotalWidth)))
         }
-    }, [tbleWidth]);
+    }, [tblWidthValue]);
+
 
     const sortedUniqueValues = useMemo(() => {
         let values = []
-        header.id != "SELECT" ?
-            values = Array.from(header.column.getFacetedUniqueValues().keys()).sort()
-            : values = []
+        header.id != "SELECT" ? (
+            header.id != "ACTION" ? values = Array.from(header.column.getFacetedUniqueValues().keys()).sort()
+                : values = []
+        ) : values = []
         return values;
     })
 
@@ -72,7 +67,7 @@ function TableHeader(props) {
                 maxWidth: thWidth,
             }}
         >
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {
                     { asc: <ExpandLessIcon sx={{ fontSize: '20px', pb: 0.3, mr: 'auto' }} />, desc: <ExpandMoreIcon sx={{ fontSize: '20px', pb: 0.3, mr: 'auto' }} /> }[header.column.getIsSorted()]
                 }
@@ -83,14 +78,14 @@ function TableHeader(props) {
                     {
                         header.isPlaceholder ? null
                             : flexRender(
-                                (header.column.columnDef.header[cookies.load('site-lang')] ? header.column.columnDef.header[cookies.load('site-lang')]
+                                (header.column.columnDef.header[cookies.load('cpv-site-lang')] ? header.column.columnDef.header[cookies.load('cpv-site-lang')]
                                     : header.column.columnDef.header),
                                 header.getContext()
                             )
                     }
                 </div>
                 {
-                    header.id === "SELECT" ? null :
+                    (header.id === "SELECT" || header.id === "ACTION") ? null :
                         header.column.getCanFilter() ?
                             <IconButton size="small" edge="end" color='inherit' sx={{ ml: 'auto', mr: 0.4, p: 0 }} onClick={handleFilterToggle}>
                                 {
@@ -113,7 +108,7 @@ function TableHeader(props) {
                                     {{
                                         kor: "선택 안 함",
                                         eng: "Not choosing"
-                                    }[cookies.load('site-lang')]}
+                                    }[cookies.load('cpv-site-lang')]}
                                 </option>
                                 {
                                     sortedUniqueValues.map((value) => <option key={value}>{value}</option>)

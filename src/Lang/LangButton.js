@@ -1,7 +1,8 @@
 // ======================================================================================== [Import Libaray]
 import { useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
 import cookies from 'react-cookies'
+// Redux
+import { useSelector } from "react-redux";
 
 // ======================================================================================== [Import Material UI Libaray]
 import { IconButton, Modal, Paper, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
@@ -19,7 +20,7 @@ import envLangFinder from '../Env/envLangFinder';
 function LangButton() {
     // Redux
     const envClientLang = useSelector(state => state.envClient.lang);
-
+    
     const style = {
         subtitle: {
             box: {
@@ -71,16 +72,16 @@ function LangButton() {
     let [siteLang, setSiteLang] = useState('');
     const handleLang = (event) => {
         setSiteLang(event.target.value)
-        cookies.save('site-lang', event.target.value, { path: '/' });
+        cookies.save('cpv-site-lang', event.target.value, { path: '/' });
     }
 
     useEffect(() => {
 
-        if (!cookies.load('site-lang')) {
-            cookies.save('site-lang', 'ENG', { path: '/' })
+        if (!cookies.load('cpv-site-lang')) {
+            cookies.save('cpv-site-lang', 'ENG', { path: '/' })
         }
 
-        setSiteLang(cookies.load('site-lang'))
+        setSiteLang(cookies.load('cpv-site-lang'))
     }, []);
 
     return (
