@@ -1,6 +1,8 @@
 // ======================================================================================== [Import Libaray]
 import React, { useEffect, useState } from 'react';
-
+// Redux
+import { useDispatch } from "react-redux";
+import { setBackDrop } from "../store";
 // ======================================================================================== [Import Material UI Libaray]
 // N/A
 
@@ -11,15 +13,19 @@ import authPermissionCheck from '../Auth/authPermissionCheck'
 //Nav
 import navCompList from '../Nav/navCompList';
 // Nav - RedirectPage
-import PermissionDenied from '../Rep/RepPermissionDenied'
+import PermissionDenied from '../Redirect/RedirectPermissionDenied'
 
 // ======================================================================================== [Import CSS]
 // N/A
 
 function AuthDynRoute({ menuCD, comp }) {
-  const [permission, setPermission] = useState(false);
+  // Redux
+  let dispatch = useDispatch()
+
+  const [permission, setPermission] = useState(true);
 
   const checkPermission = async () => {
+    dispatch(setBackDrop(true))
     try {
       setPermission(await authPermissionCheck(menuCD));
     } catch (error) {
@@ -27,6 +33,7 @@ function AuthDynRoute({ menuCD, comp }) {
       console.log(error)
       setPermission(false);
     }
+    dispatch(setBackDrop(false))
   };
 
   useEffect(() => {

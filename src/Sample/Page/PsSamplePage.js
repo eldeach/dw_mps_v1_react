@@ -57,7 +57,7 @@ function SamplePage() {
             <Table
                 size={{
                     tableWidth: '96vw',
-                    tblNumRow: 5
+                    tblNumRow: 20
                 }}
                 muiColor='primary'
                 reqParam={{

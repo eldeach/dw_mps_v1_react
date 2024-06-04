@@ -7,6 +7,7 @@
 // ======================================================================================== [Import Project JS]
 import CtrlChartSample from '../Sample/Page/PsChartSample'
 import SamplePage from '../Sample/Page/PsSamplePage'
+import CpvReportPartial from '../CpvReport/CpvReportPartial'
 
 
 // ======================================================================================== [Import CSS]
@@ -16,7 +17,7 @@ import SamplePage from '../Sample/Page/PsSamplePage'
 const navCompList = {
     Home : <div/>,
     SamplePage : <SamplePage/>,
-    CtrlChartSample: <CtrlChartSample />
+    CtrlChartSample: <CpvReportPartial />
 }
 
 export default navCompList;

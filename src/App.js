@@ -5,8 +5,9 @@ import axios from 'axios';
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { setEnvClientLang, setEnvClientMenu, setEnvClientPlantlist, setEnvClientAppBarTitle } from "./store";
+import { setEnvClientLang, setEnvClientMenu, setEnvClientPlantlist, setEnvClientAppBarTitle, setBackDrop } from "./store";
 // ======================================================================================== [Import Material UI Libaray]
+import { Backdrop, CircularProgress } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 //icons
@@ -22,20 +23,21 @@ import NavMenu from './Nav/NavMenu'
 // Theme
 import themeSystem from './Theme/themeSystem';
 
+import RedirectSessionExpired from './Redirect/RedirectSessionExpired'
+
 // ======================================================================================== [Import CSS]
 import './App.css';
 
 
 function App() {
   // Redux
+  const backDrop = useSelector(state => state.backDrop);
   const envClientMenu = useSelector(state => state.envClient.menu);
   let dispatch = useDispatch()
 
-
-
-  useLayoutEffect(async () => {
-    let rs = []
-    rs = await axios.get('/envclient')
+  const fetchEnv = async () => {
+    dispatch(setBackDrop(true))
+    await axios.get('/envclient')
       .then((res) => {
         dispatch(setEnvClientLang(res.data[0]))
         dispatch(setEnvClientMenu(res.data[1]))
@@ -46,6 +48,11 @@ function App() {
         console.log("ERROR OCCUR \n\n")
         console.log(error)
       })
+    dispatch(setBackDrop(false))
+  }
+
+  useLayoutEffect(() => {
+    fetchEnv()
   }, [])
 
   return (
@@ -65,7 +72,14 @@ function App() {
               }) : null
             }
             <Route path={'/system'} element={<AuthDynRoute menuCD={'system'} comp={'SamplePage'} />} />
+            <Route path={'/sessionexpired'} element={<RedirectSessionExpired />} />
           </Routes>
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={backDrop}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
         </Box>
       </div>
     </ThemeProvider>

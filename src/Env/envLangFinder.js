@@ -21,7 +21,7 @@ function envLangFinder(envData, LANG_CD) {
     if (extractedValue !== null) {
         return extractedValue
     } else {
-        return cookies.load('cpv-site-lang')
+        return LANG_CD
     }
 }
 

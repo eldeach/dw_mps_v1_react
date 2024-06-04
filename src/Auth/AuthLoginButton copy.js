@@ -1,14 +1,12 @@
 // ======================================================================================== [Import Libaray]
 import { useEffect, useState } from 'react';
+import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
-import dayjs from 'dayjs';
+import moment from 'moment/moment';
 
-// Redux
-import { useDispatch, useSelector } from "react-redux";
-import { setscCloseExp, scUpdate, scExpire } from "../store";
 // ======================================================================================== [Import Material UI Libaray]
 import { Autocomplete, Button, Modal, Paper, TextField, Box, IconButton } from '@mui/material';
 //icon
@@ -20,16 +18,10 @@ import envLangFinder from '../Env/envLangFinder';
 
 // ======================================================================================== [Import Component] CSS
 
-
-
-
 function LoginButton() {
     // Redux
-    const dispatch = useDispatch();
     const envClientLang = useSelector(state => state.envClient.lang);
     const envClientPlantlist = useSelector(state => state.envClient.plantlist);
-    let scLoginStat = useSelector(state => state.sessCtrl.scLoginStat);
-    let scCloseExp = useSelector(state => state.sessCtrl.scCloseExp);
 
     // navigator
     const navigate = useNavigate();
@@ -78,17 +70,33 @@ function LoginButton() {
     const [popup, setPopup] = useState(0);
     const handleModalClose = () => setPopup(0);
 
+    const [loginStatus, setLoginStatus] = useState(false);
+    const [expireDateTime, setExpireDateTime] = useState(null)
+    const [imminent, setImminent] = useState(false);
+
+
+    const loginStatusUpdate = (expireDateTime) => {
+        setLoginStatus(true)
+        setExpireDateTime(expireDateTime)
+        setImminent(false)
+    }
+
+    const loginStatusExpired = () => {
+        setLoginStatus(false)
+        setExpireDateTime(null)
+        setImminent(false)
+    }
 
     const logoutFunc = async function () {
         await axios.get("/local-logout")
             .then((res) => {
-                dispatch(scExpire())
+                loginStatusExpired()
                 navigate('/sessionexpired')
             })
             .catch((error) => {
                 console.log("ERROR OCCUR \n\n")
                 console.log(error)
-                dispatch(scExpire())
+                loginStatusExpired()
             })
     }
 
@@ -101,7 +109,7 @@ function LoginButton() {
         await axios.post('/local-login', payload)
             .then((res) => {
                 if (res.status === 200 && res.data.msg === "LOGIN_07") {
-                    dispatch(scUpdate(res.data.extraData.expireDateTime));
+                    loginStatusUpdate(res.data.extraData.expireDateTime);
                     handleModalClose();
 
                 } else if (res.status === 200 && res.data.msg === "LOGIN_09") {
@@ -113,7 +121,7 @@ function LoginButton() {
             .catch((error) => {
                 console.log("ERROR OCCUR \n\n")
                 console.log(error)
-                dispatch(scExpire())
+                loginStatusExpired()
             })
     }
 
@@ -121,7 +129,7 @@ function LoginButton() {
         await axios.get('/sessioncheck')
             .then((res) => {
                 if (res.status === 200 && res.data.msg === "LOGIN_13") {
-                    dispatch(scUpdate(res.data.extraData.expireDateTime))
+                    loginStatusUpdate(res.data.extraData.expireDateTime)
                 }
                 else if (res.status === 200 && res.data.msg === "LOGIN_11") {
                     // alert(res.data.msg)
@@ -133,7 +141,7 @@ function LoginButton() {
             .catch((error) => {
                 console.log("ERROR OCCUR \n\n")
                 console.log(error)
-                dispatch(scExpire())
+                loginStatusExpired()
             })
     }
 
@@ -149,16 +157,16 @@ function LoginButton() {
 
     useEffect(() => {
         const handleMouseDown = (e) => {
-            if (scLoginStat && scCloseExp) {
-                dispatch(setscCloseExp(false))
+            if (loginStatus && imminent) {
                 sessioncheck();
+                setImminent(false);
             }
         };
 
         const handleKeyDown = (e) => {
-            if (scLoginStat && scCloseExp) {
-                dispatch(setscCloseExp(false))
+            if (loginStatus && imminent) {
                 sessioncheck();
+                setImminent(false);
             }
         };
 
@@ -169,28 +177,30 @@ function LoginButton() {
             window.removeEventListener('mousedown', handleMouseDown);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [scLoginStat, scCloseExp]);
+    }, [loginStatus, imminent]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
 
-            <Button variant="outlined" color="white" size="small" onClick={() => { scLoginStat ? logoutFunc() : setPopup(1) }}>
+            <Button variant="outlined" color="white" size="small" onClick={() => { loginStatus ? logoutFunc() : setPopup(1) }}>
                 {
-                    scLoginStat ?
+                    loginStatus ?
                         envLangFinder(envClientLang, `LOGIN_02`)
                         : envLangFinder(envClientLang, `LOGIN_01`)
                 }
             </Button>
             {
-                scLoginStat ?
+                loginStatus ?
                     <SessionTimer
+                        expireDateTime={expireDateTime}
+                        midFunc={setImminent}
                         endFunc={logoutFunc}
                     />
                     : <div />
             }
 
             {
-                scLoginStat ?
+                loginStatus ?
                     // <div>
                     //     <IconButton size="large" edge="end" color="inherit" onClick={() => { navigate('/') }}>
                     //         <AccountCircleIcon />
@@ -307,18 +317,16 @@ function LoginButton() {
 
 
 function SessionTimer(props) {
-    // Redux
-    const dispatch = useDispatch();
-    let scExpDateTime = useSelector(state => state.sessCtrl.scExpDateTime);
 
     const [expireSec, setExpireSec] = useState(0)
     const [expireMin, setExpireMin] = useState(0)
 
     useEffect(() => {
         const countdown = setInterval(() => {
-            let nowDateTime = dayjs()
-            let remainedSec = dayjs(scExpDateTime).diff(nowDateTime, 's')
-            let remainedMin = dayjs(scExpDateTime).diff(nowDateTime, 'm')
+            let expireDateTime = moment(props.expireDateTime)
+            let nowDateTime = new Date()
+            let remainedSec = moment(expireDateTime).diff(nowDateTime, 's')
+            let remainedMin = moment(expireDateTime).diff(nowDateTime, 'm')
             if (parseInt(remainedSec) <= 0) {
                 setExpireMin(0)
                 setExpireSec(0)
@@ -326,7 +334,7 @@ function SessionTimer(props) {
                 clearInterval(countdown);
             } else {
                 if ((parseInt(remainedSec) < 60) && (58 < parseInt(remainedSec))) {
-                    dispatch(setscCloseExp(true))
+                    props.midFunc(true)
                 }
                 setExpireMin(remainedMin)
                 setExpireSec(remainedSec - remainedMin * 60)

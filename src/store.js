@@ -32,10 +32,51 @@ const openDrawer = createSlice({
 export const { setOpenDrawer } = openDrawer.actions
 
 
+const backDrop = createSlice({
+  name: 'backDrop',
+  initialState: false,
+  reducers: {
+    setBackDrop: (state, action) => {
+      return state = action.payload
+    },
+  }
+})
+export const { setBackDrop } = backDrop.actions
+
+const sessCtrl = createSlice({ 
+  name: 'sessCtrl',
+  initialState: { scLoginStat: false, scCloseExp: false, scExpDateTime : null }, //expDateTime는 ISO String 담을 것
+  reducers: {
+    setscLoginStat: (state, action) => {
+      state.scLoginStat = action.payload
+    },
+    setscCloseExp: (state, action) => {
+      state.scCloseExp = action.payload
+    },
+    setscExpDateTime: (state, action) => {
+      state.scExpDateTime = action.payload
+    },
+    scUpdate: (state, action) => {
+      state.scLoginStat = true
+      state.scCloseExp = false
+      state.scExpDateTime = action.payload
+    },
+    scExpire: (state) => {
+      state.scLoginStat = false
+      state.scCloseExp = false
+      state.scExpDateTime = null
+    },
+  }
+})
+export const { setscLoginStat, setscCloseExp, setscExpDateTime, scUpdate, scExpire } = sessCtrl.actions
+
+
 
 export default configureStore({
   reducer: {
-    envClient: envClient.reducer, // 여기서 선언된 key가 useSelector에서 사용할 key 값임
-    openDrawer: openDrawer.reducer, // 여기서 선언된 key가 useSelector에서 사용할 key 값임
+    envClient: envClient.reducer,
+    openDrawer: openDrawer.reducer,
+    backDrop: backDrop.reducer,
+    sessCtrl: sessCtrl.reducer, 
   }
 }) 
