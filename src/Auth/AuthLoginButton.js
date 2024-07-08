@@ -5,18 +5,19 @@ import { Formik } from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-
+import cookies from 'react-cookies'
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { setscCloseExp, scUpdate, scExpire } from "../store";
+import { setEnvClientLang, setEnvClientLanglist, setEnvClientMenu, setEnvClientPlantlist, setBackDrop } from "../store";
+import { setCloseExp, scUpdate, scExpire } from "../store";
 // ======================================================================================== [Import Material UI Libaray]
-import { Autocomplete, Button, Modal, Paper, TextField, Box, IconButton } from '@mui/material';
+import { Autocomplete, Button, Modal, Paper, TextField, Box } from '@mui/material';
+import { Stack } from '@mui/material';
 //icon
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // ======================================================================================== [Import Component] js
 // Env
-import envLangFinder from '../Env/envLangFinder';
 
 // ======================================================================================== [Import Component] CSS
 
@@ -26,10 +27,10 @@ import envLangFinder from '../Env/envLangFinder';
 function LoginButton() {
     // Redux
     const dispatch = useDispatch();
-    const envClientLang = useSelector(state => state.envClient.lang);
     const envClientPlantlist = useSelector(state => state.envClient.plantlist);
-    let scLoginStat = useSelector(state => state.sessCtrl.scLoginStat);
-    let scCloseExp = useSelector(state => state.sessCtrl.scCloseExp);
+    const envClientLangList = useSelector(state => state.envClient.langlist);
+    let loginStat = useSelector(state => state.sessCtrl.loginStat);
+    let closeExp = useSelector(state => state.sessCtrl.closeExp);
 
     // navigator
     const navigate = useNavigate();
@@ -60,12 +61,44 @@ function LoginButton() {
         },
     }
 
+    function getLangMappings(data, lang) {
+        console.log(lang)
+        return data.reduce((acc, item) => {
+            if (item.REGION == lang) {
+                acc[item.LANG_CD] = item.VAL_STR;
+            }
+            return acc;
+        }, {});
+    }
+
+
+    const fetchEnv = async () => {
+        dispatch(setBackDrop(true))
+        await axios.get('/envclient')
+            .then((res) => {
+
+                dispatch(setEnvClientLanglist(res.data[1]))
+                dispatch(setEnvClientMenu(res.data[2]))
+                dispatch(setEnvClientPlantlist(res.data[3]))
+            })
+            .catch((error) => {
+                console.log("ERROR OCCUR \n\n")
+                console.log(error)
+            })
+        dispatch(setBackDrop(false))
+    }
+
+    useEffect(() => {
+        fetchEnv()
+    }, [])
+
     const yupSchema = yup.object().shape({
         user_account: yup.string()
-            .required(envLangFinder(envClientLang, `LOGIN_05`)),
+            .required('Please enter user account.'),
 
         user_pw: yup.string()
-            .required(envLangFinder(envClientLang, `LOGIN_06`)),
+            .required('Please enter your password.'),
+
     });
 
     const initialValues = {
@@ -74,6 +107,7 @@ function LoginButton() {
         plant_cd: ''
     }
     const [plant, setPlant] = useState(null);
+    const [lang, setLang] = useState(null);
 
     const [popup, setPopup] = useState(0);
     const handleModalClose = () => setPopup(0);
@@ -96,16 +130,26 @@ function LoginButton() {
         let payload = {
             USER_ID: values.user_account,
             PWD: values.user_pw,
-            PLANT_CD: plant.PLANT_CD
+            PLANT_CD: plant.PLANT_CD,
+            LANG: lang.COMM_CD
         }
         await axios.post('/local-login', payload)
-            .then((res) => {
+            .then(async (res) => {
                 if (res.status === 200 && res.data.msg === "LOGIN_07") {
+                    console.log(res.data.extraData)
                     dispatch(scUpdate(res.data.extraData.expireDateTime));
+
+                    await axios.get('/envclientlang')
+                        .then((res) => {
+                            let langMapping = getLangMappings(res.data[0], lang.VAL_01)
+                            dispatch(setEnvClientLang(langMapping))
+                        })
+
+
                     handleModalClose();
 
                 } else if (res.status === 200 && res.data.msg === "LOGIN_09") {
-                    alert(envLangFinder(envClientLang, res.data.msg))
+                    alert('Login failed.')
                 } else {
 
                 }
@@ -149,15 +193,15 @@ function LoginButton() {
 
     useEffect(() => {
         const handleMouseDown = (e) => {
-            if (scLoginStat && scCloseExp) {
-                dispatch(setscCloseExp(false))
+            if (loginStat && closeExp) {
+                dispatch(setCloseExp(false))
                 sessioncheck();
             }
         };
 
         const handleKeyDown = (e) => {
-            if (scLoginStat && scCloseExp) {
-                dispatch(setscCloseExp(false))
+            if (loginStat && closeExp) {
+                dispatch(setCloseExp(false))
                 sessioncheck();
             }
         };
@@ -169,61 +213,48 @@ function LoginButton() {
             window.removeEventListener('mousedown', handleMouseDown);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [scLoginStat, scCloseExp]);
+    }, [loginStat, closeExp]);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
-
-            <Button variant="outlined" color="white" size="small" onClick={() => { scLoginStat ? logoutFunc() : setPopup(1) }}>
+        <Stack direction="row" spacing={2}>
+            <Button variant="outlined" color="white" size="small" onClick={() => { loginStat ? logoutFunc() : setPopup(1) }}>
                 {
-                    scLoginStat ?
-                        envLangFinder(envClientLang, `LOGIN_02`)
-                        : envLangFinder(envClientLang, `LOGIN_01`)
+                    loginStat ? 'LOGOUT' : 'LOGIN'
                 }
             </Button>
             {
-                scLoginStat ?
+                loginStat ?
                     <SessionTimer
                         endFunc={logoutFunc}
                     />
-                    : <div />
+                    : null
             }
-
-            {
-                scLoginStat ?
-                    // <div>
-                    //     <IconButton size="large" edge="end" color="inherit" onClick={() => { navigate('/') }}>
-                    //         <AccountCircleIcon />
-                    //     </IconButton>
-                    // </div>
-                    <Button variant="outlined" color="white" size="small" onClick={() => { navigate('/') }}>
-                        <AccountCircleIcon />
-                    </Button>
-                    : <div />
-            }
-
             <Modal open={(popup === 1)} onClose={handleModalClose}>
                 <Paper sx={style.toMui.popupPaper} elevation={3}>
-                    <div className="popup-close-button-box"><button className='popup-close-button' onClick={handleModalClose}>X</button></div>
+                    <div className="popup-x-bt"><button onClick={handleModalClose}>X</button></div>
                     <Formik
                         validationSchema={yupSchema}
                         initialValues={initialValues}
                         onSubmit={async (values, actions) => {
-                            await onSubmitFunc(values);
+                            if(!lang){
+                                alert('Please choose your language')
+                            } else {
+                                await onSubmitFunc(values);
+                            }
                         }}
                     >
                         {formikProps => (
                             <form
                                 noValidate
-                                style={{ width: '350px', hegith: '240px', display: 'flex', flexDirection: 'column' }}
+                                style={{ width: '350px', hegith: '240px' }}
                                 id="loginForm"
                                 autoComplete='off'
                                 onSubmit={formikProps.handleSubmit}
                             >
-                                <div>
+                                <Stack direction="column" spacing={1}>
                                     <div style={style.popupTitle.box}>
                                         <AccountCircleIcon color='primary' sx={{ fontSize: 'xx-large' }} />
-                                        <div style={style.popupTitle.text}>{envLangFinder(envClientLang, `LOGIN_01`)}</div>
+                                        <div style={style.popupTitle.text}>LOGIN</div>
                                     </div>
                                     <Autocomplete
                                         id="plant"
@@ -249,11 +280,11 @@ function LoginButton() {
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
-                                                label={`${envLangFinder(envClientLang, `LOGIN_12`)}`}
+                                                label="Factory"
                                                 inputProps={{ ...params.inputProps, style: style.toMui.inputTextField }} // font size of input text
                                                 InputLabelProps={{ ...params.InputLabelProps, style: style.toMui.inputTextField }} // font size of input label
                                                 slotProps={{ ...params.slotProps, style: style.toMui.inputTextField }}
-                                                placeholder={`${envLangFinder(envClientLang, `LOGIN_12`)}`}
+                                                placeholder="Factory"
                                             />
                                         )}
                                     />
@@ -262,8 +293,8 @@ function LoginButton() {
                                         variant="outlined"
                                         id="user_account"
                                         name="user_account"
-                                        label={envLangFinder(envClientLang, `LOGIN_03`)}
-                                        placeholder={`${envLangFinder(envClientLang, `LOGIN_03`)}`}
+                                        label='User ID'
+                                        placeholder='User ID'
                                         value={formikProps.values.user_account}
                                         onChange={formikProps.handleChange}
                                         onBlur={formikProps.handleBlur}
@@ -280,8 +311,8 @@ function LoginButton() {
                                         variant="outlined"
                                         id="user_pw"
                                         name="user_pw"
-                                        label={envLangFinder(envClientLang, `LOGIN_04`)}
-                                        placeholder={`${envLangFinder(envClientLang, `LOGIN_04`)}`}
+                                        label='Password'
+                                        placeholder='Password'
                                         type="password"
                                         value={formikProps.values.user_pw}
                                         onChange={formikProps.handleChange}
@@ -294,14 +325,41 @@ function LoginButton() {
                                         inputProps={{ style: style.toMui.inputTextField }} // font size of input text
                                         InputLabelProps={{ style: style.toMui.inputTextField }} // font size of input label
                                     />
-                                </div>
-                                <Button sx={{ mt: 1 }} color='primary' fullWidth variant="contained" size='small' type="submit" form="loginForm">{envLangFinder(envClientLang, `LOGIN_01`)}</Button>
+                                    <Autocomplete
+                                        required
+                                        id="lang"
+                                        size="small"
+                                        disableClearable
+                                        value={lang}
+                                        onChange={(event, newValue) => {
+                                            setLang(newValue);
+                                        }}
+                                        options={envClientLangList}
+                                        getOptionLabel={(option) => `${option.VAL_01} (${option.COMM_NM})`}
+                                        renderOption={(props, option) => (
+                                            <Box sx={{ ...style.toMui.inputTextField }} {...props}>
+                                                {`${option.VAL_01} (${option.COMM_NM})`}
+                                            </Box>
+                                        )}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={`Language`}
+                                                inputProps={{ ...params.inputProps, style: style.toMui.inputTextField }} // font size of input text
+                                                InputLabelProps={{ ...params.InputLabelProps, style: style.toMui.inputTextField }} // font size of input label
+                                                slotProps={{ ...params.slotProps, style: style.toMui.inputTextField }}
+                                                placeholder={`Language`}
+                                            />
+                                        )}
+                                    />
+                                    <Button sx={{ mt: 1 }} color='primary' fullWidth variant="contained" size='small' type="submit" form="loginForm">LOGIN</Button>
+                                </Stack>
                             </form>
                         )}
                     </Formik>
                 </Paper>
             </Modal>
-        </div>
+        </Stack>
     )
 }
 
@@ -326,7 +384,7 @@ function SessionTimer(props) {
                 clearInterval(countdown);
             } else {
                 if ((parseInt(remainedSec) < 60) && (58 < parseInt(remainedSec))) {
-                    dispatch(setscCloseExp(true))
+                    dispatch(setCloseExp(true))
                 }
                 setExpireMin(remainedMin)
                 setExpireSec(remainedSec - remainedMin * 60)

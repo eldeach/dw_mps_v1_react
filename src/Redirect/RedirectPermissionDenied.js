@@ -72,15 +72,15 @@ function NoAuthPage() {
         <div id='sessionExpiredMsgPage'>
             <div style={style.subtitle.box}>
                 <DoDisturbIcon color='denied' sx={{ fontSize: '60px' }} />
-                <div style={style.subtitle.text}>{envLangFinder(envClientLang, 'PERDENY_01')}</div>
+                <div style={style.subtitle.text}>{envClientLang['PERDENY_01']}</div>
             </div>
             <div style={style.descriptionBox}>
                 <InfoIcon color='primary' fontSize="medium" />
-                <p style={style.description}>{envLangFinder(envClientLang, 'PERDENY_02')}</p>
-                <p style={style.description}>{envLangFinder(envClientLang, 'PERDENY_03')}</p>
+                <p style={style.description}>{envClientLang['PERDENY_02']}</p>
+                <p style={style.description}>{envClientLang['PERDENY_03']}</p>
             </div>
             <div style={{ widht: '100%', textAlign: 'center' }}>
-                <Button sx={{ mt: 1 }} color='primary' variant="contained" size='small' href={'/'} >{noAuthPageLang.sessionExpiredMsgPage.returnButton[cookies.load('cpv-site-lang')]}</Button>
+                <Button sx={{ mt: 1 }} color='primary' variant="contained" size='small' href={'/'} >Go to the first page</Button>
             </div>
         </div>
     )

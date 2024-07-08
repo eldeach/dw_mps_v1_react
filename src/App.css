@@ -1,50 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 div {
   font-family: sans-serif;
 }
 
-.popup-close-button-box {
+/* popup-x-bt */
+.popup-x-bt {
   width: 100%;
   display: block;
   text-align: end;
-  box-sizing: border-box;
 }
 
-.popup-close-button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 3px;
-  border: solid 0.5px;
-  border-color: #D62600 ;
-  background-color: transparent;
+.popup-x-bt button {
+  width:16px;
+  height:16px;
   color:#D62600;
-  transition: all 0.1s;
+  border: 0.5px solid #D62600 ;
+  border-radius: 3px;
+  background-color: transparent;
+  transition: all 0.2s;
   transition-timing-function: cubic-bezier(1, -0.08, 0.95, 0.95);
   
 }
 
-.popup-close-button:hover {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 3px;
-  border: solid 0.5px;
+.popup-x-bt button:hover {
   border-color: red ;
   background-color: #FFCDC7;
   color:red;
-  transition:none;
-  
-}
-
-.popup-close-button:active {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 3px;
-  border: solid 0.5px;
-  border-color: #D62600 ;
-  background-color: transparent;
-  color:#D62600;  
 }
 
 .chart-box {
