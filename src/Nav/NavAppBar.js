@@ -1,44 +1,39 @@
 // ======================================================================================== [Import Libaray]
-// N/A
+import axios from 'axios';
+import cookies from 'react-cookies'
+import { useEffect, useState } from "react";
 // Redux
-import { useDispatch, useSelector } from "react-redux";
-import { setOpenDrawer } from "../store";
+import { useDispatch } from "react-redux";
+import { setEnvClientLang, setEnvClientMenu } from "../store";
 // ======================================================================================== [Import Material UI Libaray]
 import AppBar from '@mui/material/AppBar';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 //icons
 import MenuIcon from '@mui/icons-material/Menu';
-
 // ======================================================================================== [Import Project JS]
-// N/A
-import AuthLoginButton from '../Auth/AuthLoginButton';
+import Menu from './Sub/Menu'
+import LoginButton from './Sub/LoginButton';
 
 // ======================================================================================== [Import CSS]
 // N/A
 
-
-
 function NavAppBar() {
-    // Redux
-    const envClientAppBarTitle = useSelector(state => state.envClient.appBarTitle);
-    let dispatch = useDispatch()
-
-    const openDrawer=()=>{
-        dispatch(setOpenDrawer(true))
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const handleDrawer = (v) => {
+        setOpenDrawer(v)
     }
-    
-    const theme = useTheme();
 
     return (
         <AppBar position="fixed">
             <Toolbar variant="dense">
                 <IconButton
                     color="inherit"
-                    onClick={() =>openDrawer()}
+                    onClick={async () => {
+                        handleDrawer(true)
+                    }}
                     edge="start"
                     sx={{
                         mr: 1
@@ -50,8 +45,9 @@ function NavAppBar() {
                     CPV
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
-                <AuthLoginButton />
+                <LoginButton />
             </Toolbar>
+            <Menu openDrawer={openDrawer} handleDrawer={handleDrawer} />
         </AppBar>
     )
 }

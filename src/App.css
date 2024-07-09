@@ -8,6 +8,19 @@ div {
   font-family: sans-serif;
 }
 
+/* popup-title */
+.popup-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-title div {
+  font-size: 20px;
+  margin-top: 4px;
+  margin-left: 2px;
+}
+
 /* popup-x-bt */
 .popup-x-bt {
   width: 100%;
@@ -16,30 +29,63 @@ div {
 }
 
 .popup-x-bt button {
-  width:16px;
-  height:16px;
-  color:#D62600;
-  border: 0.5px solid #D62600 ;
+  width: 16px;
+  height: 16px;
+  color: #D62600;
+  border: 0.5px solid #D62600;
   border-radius: 3px;
   background-color: transparent;
   transition: all 0.2s;
   transition-timing-function: cubic-bezier(1, -0.08, 0.95, 0.95);
-  
+
 }
 
 .popup-x-bt button:hover {
-  border-color: red ;
+  border-color: red;
   background-color: #FFCDC7;
-  color:red;
+  color: red;
 }
 
+/* session-timer */
+.session-min-sec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 34;
+  border-radius: 5px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: color 1s ease, border 1s ease;
+}
+
+.session-min-sec-alert {
+  color: red;
+  border: 1px solid red;
+}
+
+/* redirect-page */
+.redirect-page {
+  width: 100%;
+  height: calc(100vh - 94px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.redirect-page div {
+  font-size: large;
+}
+
+
+/* chart */
 .chart-box {
-  display:flex;
+  display: flex;
   flex-direction: column;
   width: 660px;
-  padding-top : 10px;
-  padding-bottom : 10px;
-  border : solid grey 1px;
-  box-sizing : border-box;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: solid grey 1px;
+  box-sizing: border-box;
   text-align: center;
 }

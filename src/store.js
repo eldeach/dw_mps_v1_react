@@ -1,24 +1,22 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit' // redux 기본 라이브러리
 
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import { persistStore, persistReducer } from 'redux-persist'
+import { combineReducers } from 'redux'
+
 const envClient = createSlice({
   name: 'envClient',
-  initialState: { lang: [], langlist:[], menu: [], plantlist : [] },
+  initialState: { lang: [],menu: []},
   reducers: {
     setEnvClientLang: (state, action) => {
       state.lang = action.payload
     },
-    setEnvClientLanglist: (state, action) => {
-      state.langlist = action.payload
-    },
     setEnvClientMenu: (state, action) => {
       state.menu = action.payload
     },
-    setEnvClientPlantlist: (state, action) => {
-      state.plantlist = action.payload
-    },
   }
 })
-export const { setEnvClientLang, setEnvClientLanglist, setEnvClientMenu, setEnvClientPlantlist  } = envClient.actions
+export const { setEnvClientLang, setEnvClientMenu} = envClient.actions
 
 const openDrawer = createSlice({
   name: 'openDrawer',
@@ -43,40 +41,37 @@ const backDrop = createSlice({
 })
 export const { setBackDrop } = backDrop.actions
 
-const sessCtrl = createSlice({ 
-  name: 'sessCtrl',
-  initialState: { loginStat: false, closeExp: false, scExpDateTime : null }, //expDateTime는 ISO String 담을 것
-  reducers: {
-    setLoginStat: (state, action) => {
-      state.loginStat = action.payload
-    },
-    setCloseExp: (state, action) => {
-      state.closeExp = action.payload
-    },
-    setscExpDateTime: (state, action) => {
-      state.scExpDateTime = action.payload
-    },
-    scUpdate: (state, action) => {
-      state.loginStat = true
-      state.closeExp = false
-      state.scExpDateTime = action.payload
-    },
-    scExpire: (state) => {
-      state.loginStat = false
-      state.closeExp = false
-      state.scExpDateTime = null
-    },
-  }
+
+// export default configureStore({
+//   reducer: {
+//     envClient: envClient.reducer,
+//     openDrawer: openDrawer.reducer,
+//     backDrop: backDrop.reducer,
+//   }
+// }) 
+
+// Persist config
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+// Combine reducers
+const rootReducer = combineReducers({
+  envClient: envClient.reducer,
+  openDrawer: openDrawer.reducer,
+  backDrop: backDrop.reducer,
 })
-export const { setLoginStat, setCloseExp, setscExpDateTime, scUpdate, scExpire } = sessCtrl.actions
 
+// Persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
+// Create store
+const store = configureStore({
+  reducer: persistedReducer,
+})
 
-export default configureStore({
-  reducer: {
-    envClient: envClient.reducer,
-    openDrawer: openDrawer.reducer,
-    backDrop: backDrop.reducer,
-    sessCtrl: sessCtrl.reducer, 
-  }
-}) 
+// Persistor
+const persistor = persistStore(store)
+
+export { store, persistor }
