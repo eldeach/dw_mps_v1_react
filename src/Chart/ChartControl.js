@@ -58,6 +58,7 @@ function ChartControl(props) {
                     tick={{ fontSize: 10 }}
                     tickFormatter={formatYAxisTick}
                     unit={` ${unit}`}
+                    domain={[lsl-100, usl + 100]}
                 />
                 <Tooltip
                     labelStyle={tooltopLabelStyle}

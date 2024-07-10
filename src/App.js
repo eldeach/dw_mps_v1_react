@@ -31,6 +31,10 @@ export default function App() {
   const envClientMenu = useSelector(state => state.envClient.menu);
   const backDrop = useSelector(state => state.backDrop);
 
+  const elementBook = {
+    TREND_DATA: <TrendData />
+  }
+
   return (
     <ThemeProvider theme={themeSystem}>
       <div style={{ display: 'flex' }}>
@@ -40,11 +44,16 @@ export default function App() {
           <Routes>
             <Route path={'/'} element={<div />} />
             {
-              envClientMenu ? envClientMenu.map((value, i) => {
-                return <Route key={i} path={value.ROUTE_PATH} element={<TrendData />} />
-              }) : null
+              envClientMenu ? envClientMenu.map((v, i) => {
+                if (!v.ROUTE_PATH) {
+                  return null
+                } else {
+                  return <Route key={i} path={v.ROUTE_PATH} element={elementBook[v.MENU_CD]} />
+                }
+              })
+                : null
             }
-            <Route path={'/trenddata'} element={<TrendData />} />
+            {/* 아래는 Redirect 페이지 */}
             <Route path={'/loggedout'} element={<LoggedOut />} />
             <Route path={'/*'} element={<NotFound />} />
           </Routes>

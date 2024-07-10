@@ -26,7 +26,7 @@ import TableHeader from './TableHeader';
 // ======================================================================================== [Import Component] CSS
 import './Table.css'
 
-function Table({ size, muiColor, exData, multiSelectable, columns, setTableSelected }) {
+function ExDataTable({ size, muiColor, exData, multiSelectable, columns, setTableSelected }) {
     const style = {
         inputTexstField: {
             fontSize: 12,
@@ -80,7 +80,7 @@ function Table({ size, muiColor, exData, multiSelectable, columns, setTableSelec
     const [filtering, setFiltering] = useState(""); // 선택된 row 정보 ("인덱스 : boolean" pair의 객체 구조)
     const [rowSelection, setRowSelection] = useState({}); // 선택된 row 정보 ("인덱스 : boolean" pair의 객체 구조)
     const table = useReactTable({
-        exData,
+        data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(), // 정렬함수, useReactable 생성자에 import하고 끝
@@ -97,7 +97,7 @@ function Table({ size, muiColor, exData, multiSelectable, columns, setTableSelec
             globalFilter: filtering,
             rowSelection: rowSelection,
         },
-        enableMultiRowSelection : multiSelectable,
+        enableMultiRowSelection: multiSelectable,
         onGlobalFilterChanged: setFiltering,
         onRowSelectionChange: setRowSelection, // 선택사항이 바뀔 때 수행할 함수, onChange 같은 거
         enableRowSelection: true, // selection을 허용할지 여부, row => row.original.age > 18 이런식으로 선택할 수 있는 범위를 한정할 수 있는듯 (from 유투브 - TanStack React Table v8 - Part 5 - Row Selection, Checkbox selection, Display Selected Rows)
@@ -189,7 +189,10 @@ function Table({ size, muiColor, exData, multiSelectable, columns, setTableSelec
                         onChange={handlePaegChange}
                         variant="outlined"
                         color={muiColor} />
-                    <TableExcelDownButton data={exData} muiColor={muiColor} sheetName={'Trend Data'} />
+                    {/* <IconButton size="small" edge="end" color={muiColor} sx={{ ml: 0.5, mt: 0.5 }} onClick={() => getDbData()} >
+                        <AutoModeIcon />
+                    </IconButton> */}
+                    <TableExcelDownButton data={data} muiColor={muiColor} sheetName={'Trend Data'} />
                 </div>
             </div>
             <div className="page-tbl-box">
@@ -236,4 +239,4 @@ function Table({ size, muiColor, exData, multiSelectable, columns, setTableSelec
     )
 }
 
-export default Table;
+export default ExDataTable;

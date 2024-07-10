@@ -77,6 +77,50 @@ div {
   font-size: large;
 }
 
+/* trend-data-page */
+.trend-data-page {
+  width: 100vw;
+  display: flex;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tag-list {
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.table-and-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* date-pick */
+.date-pick {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+input[type="date"] {
+  border : 1px solid #a6a6a6;
+  border-radius: 6px;
+  font-size: 18px;
+  padding:10px;
+  margin:10px;
+  color:#5e5e5e;
+}
+input[type="date"]:focus {
+  border: 1px solid #1565c0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color:#a6a6a6;
+}
+
 
 /* chart */
 .chart-box {

@@ -22,7 +22,7 @@ function TableHeader({ header, tblWidthValue, colTotalWidth }) {
     const [thWidth, setThWidth] = useState(null);
     useEffect(() => {
         if (tblWidthValue) {
-            setThWidth(Math.round((tblWidthValue - 30) * (header.getSize() / colTotalWidth)))
+            setThWidth(Math.round((tblWidthValue) * (header.getSize() / colTotalWidth)))
         }
     }, [tblWidthValue]);
 

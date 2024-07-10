@@ -12,9 +12,9 @@ const systemThemes = createTheme({
   },
   palette : {
     primary : {
-        light : '#33ab9f',
-        main : '#009688',
-        darker : '#00695f',
+        light : '#4383cc',
+        main : '#1565c0',
+        darker : '#0e4686',
         contrastText : '#fff',
     },
     // status로 옮길 수 있는거 옮겨야함

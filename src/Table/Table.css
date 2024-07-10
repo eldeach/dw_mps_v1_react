@@ -3,7 +3,7 @@
     flex-direction: column;
     padding-left:10px;
     padding-right:10px;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
 }
 
 .page-tbl-ctrl{
@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: row;
     margin-top: 5px;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
 }
 
 .page-tbl-box {
@@ -20,7 +20,7 @@
     margin-top: 3px;
     padding-top: 8px;
     overflow-x: auto;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
 }
 
 .page-tbl-box table {

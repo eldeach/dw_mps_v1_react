@@ -11,17 +11,19 @@ import { Drawer, ListItemButton, ListItemIcon, ListItemText, ListItem } from '@m
 
 // icon
 import FirstPageIcon from '@mui/icons-material/FirstPage';
-
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 // ======================================================================================== [Import Project JS]
 
 
 // ======================================================================================== [Import CSS]
 
 
-function Menu({openDrawer, handleDrawer}) {
+export default function Menu({ openDrawer, handleDrawer }) {
     // Redux
     const envClientLang = useSelector(state => state.envClient.lang);
     const envClientMenu = useSelector(state => state.envClient.menu);
+
+    const navigate = useNavigate();
 
     const closeDrawer = () => {
         handleDrawer(false)
@@ -30,15 +32,12 @@ function Menu({openDrawer, handleDrawer}) {
     return (
         <Drawer anchor={'left'} open={openDrawer} onClose={closeDrawer}>
             <Box sx={{ width: 250 }} role="presentation" onClick={closeDrawer} onKeyDown={closeDrawer}>
-                <List>
-                    <ListItemFactory navPath={'/'} icon={<FirstPageIcon />} text={"First Page"} />
-                </List>
+                <ListItemFactory v={{ MENU_CD: "FIRST_PAGE" }} />
                 <Divider />
                 {
-                    envClientMenu ? envClientMenu.map((v, i)=>{
-                        return <ListItemFactory navPath={v.ROUTE_PATH} icon={<FirstPageIcon />} text={v.MENU_NM} />
-                    }) :
-                    <ListItemFactory navPath={'/'} icon={<FirstPageIcon />} text={"First Page"} />
+                    envClientMenu ? envClientMenu.map((v, i) => {
+                        return <ListItemFactory key={i} v={v} />
+                    }) : null
                 }
             </Box>
         </Drawer>
@@ -46,19 +45,32 @@ function Menu({openDrawer, handleDrawer}) {
     )
 }
 
-function ListItemFactory({ navPath, icon, text }) {
+function ListItemFactory({ v }) {
     const navigate = useNavigate();
-    return (
-        <div>
+    const iconBook = {
+        TREND_DATA: <QueryStatsIcon />
+    }
+
+    if (v.MENU_CD.startsWith('DIVIDER')) {
+        return <Divider />
+    } else if (v.MENU_CD == 'FIRST_PAGE') {
+        return (
             <ListItem disablePadding={true}>
-                <ListItemButton onClick={() => { navigate(navPath) }}>
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText primary={<div style={{ fontSize: '13px' }}>{text}</div>} />
+                <ListItemButton onClick={() => { navigate('/') }}>
+                    <ListItemIcon><FirstPageIcon /></ListItemIcon>
+                    <ListItemText primary={<div style={{ fontSize: '13px' }}>First Page</div>} />
                 </ListItemButton>
             </ListItem>
-        </div>
-    )
-
+        )
+    }
+    else {
+        return (
+            <ListItem disablePadding={true}>
+                <ListItemButton onClick={() => { navigate(v.ROUTE_PATH) }}>
+                    <ListItemIcon>{iconBook[v.MENU_CD]}</ListItemIcon>
+                    <ListItemText primary={<div style={{ fontSize: '13px' }}>{v.MENU_NM}</div>} />
+                </ListItemButton>
+            </ListItem>
+        )
+    }
 }
-
-export default Menu
